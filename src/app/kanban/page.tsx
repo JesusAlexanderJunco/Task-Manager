@@ -185,22 +185,6 @@ export default function KanbanPage() {
         ))}
       </div>
 
-      {/* Task Statistics */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-gray-900">{todoTasks.length}</div>
-          <div className="text-sm text-gray-600">Tasks to do</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-yellow-600">{inProgressTasks.length}</div>
-          <div className="text-sm text-gray-600">In progress</div>
-        </div>
-        <div className="bg-white p-4 rounded-lg border">
-          <div className="text-2xl font-bold text-green-600">{doneTasks.length}</div>
-          <div className="text-sm text-gray-600">Completed</div>
-        </div>
-      </div>
-
       {/* Modal Forms */}
       {showTaskForm && users && (
         <TaskForm
