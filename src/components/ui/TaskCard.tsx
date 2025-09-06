@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { apiRouter } from '@/lib/trpc'
+import { News_Cycle } from 'next/font/google'
+import { error } from 'console'
 
 type Task = {
   id: string
@@ -48,11 +50,16 @@ export function TaskCard({ task, onUpdate, onDelete }: TaskCardProps) {
     }
   })
 
-  const handleStatusChange = (newStatus: 'TODO' | 'IN_PROGRESS' | 'DONE') => {
+  const handleStatusChange = (oldStatus: any, newStatus: 'TODO' | 'IN_PROGRESS' | 'DONE') => {
+    if (newStatus == 'TODO' || oldStatus == 'DONE') {
+      console.log('The task is in progress and cannot be revered to Todo')
+    }
+    else{ 
+    console.log(oldStatus)
     updateTaskMutation.mutate({
       id: task.id,
       status: newStatus
-    })
+    })}
   }
 
   const handlePriorityChange = (newPriority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT') => {
@@ -140,21 +147,21 @@ export function TaskCard({ task, onUpdate, onDelete }: TaskCardProps) {
         {/* Status controls */}
         <div className="flex gap-1">
           <button
-            onClick={() => handleStatusChange('TODO')}
+            onClick={() => handleStatusChange(task.status, 'TODO')}
             disabled={task.status === 'TODO' || updateTaskMutation.isPending}
             className="px-2 py-1 text-xs bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Todo
           </button>
           <button
-            onClick={() => handleStatusChange('IN_PROGRESS')}
+            onClick={() => handleStatusChange(task.status, 'IN_PROGRESS')}
             disabled={task.status === 'IN_PROGRESS' || updateTaskMutation.isPending}
             className="px-2 py-1 text-xs bg-yellow-200 text-yellow-800 rounded hover:bg-yellow-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             In Progress
           </button>
           <button
-            onClick={() => handleStatusChange('DONE')}
+            onClick={() => handleStatusChange(task.status, 'DONE')}
             disabled={task.status === 'DONE' || updateTaskMutation.isPending}
             className="px-2 py-1 text-xs bg-green-200 text-green-800 rounded hover:bg-green-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
