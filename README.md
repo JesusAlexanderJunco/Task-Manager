@@ -1,3 +1,27 @@
+## Project Overview: "TaskFlow"
+A collaborative task management app where users can:
+- Create and manage personal tasks
+- Share tasks with team members
+- Add comments to tasks
+- Filter and search tasks
+-Real-time updates when others make changes
+
+## Components
+Next.js: Server-side rendering for the task dashboard, file-based routing for different views
+React: Component-based UI with forms, lists, and modals
+TanStack Query: Caching task lists, optimistic updates when creating/editing tasks
+tRPC: Type-safe API routes for CRUD operations on tasks, users, and comments
+Zod: Input validation for task creation, user registration, comment submission
+Prisma: Database schema for Users, Tasks, Comments with relationships
+
+## Core Features 
+Authentication (simple email/password)
+Task CRUD (create, read, update, delete tasks)
+Task Assignment (assign tasks to team members)
+Comments System (add comments to tasks)
+Real-time Updates (using tRPC subscriptions)
+Search/Filter (by status, assignee, due date)
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

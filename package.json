@@ -8,20 +8,36 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "prisma" : {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
+    "@prisma/client": "^6.15.0",
+    "@tanstack/react-query": "^5.85.9",
+    "@tanstack/react-query-devtools": "^5.85.9",
+    "@trpc/client": "^11.5.0",
+    "@trpc/next": "^11.5.0",
+    "@trpc/react-query": "^11.5.0",
+    "@trpc/server": "^11.5.0",
+    "next": "15.5.2",
+    "prisma": "^6.15.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.2"
+    "superjson": "^2.2.2",
+    "ws": "^8.18.3",
+    "zod": "^4.1.5"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "@types/ws": "^8.18.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4",
+    "tsx": "^4.20.5",
+    "typescript": "^5"
   }
 }
