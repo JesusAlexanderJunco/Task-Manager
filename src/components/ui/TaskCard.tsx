@@ -9,7 +9,7 @@ type Task = {
   description: string | null
   status: 'TODO' | 'IN_PROGRESS' | 'DONE'
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT'
-  dueDate: string | null
+  dueDate: Date | null
   assignee: {
     id: string
     name: string
