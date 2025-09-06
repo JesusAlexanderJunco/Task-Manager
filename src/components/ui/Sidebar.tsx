@@ -29,7 +29,7 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col overflow-y-auto">
+      <nav className="flex-1 flex flex-col pl-2 overflow-y-auto">
         <ul role="list" className="flex flex-1 flex-col gap-y-7">
           <li>
             <ul role="list" className="-mx-2 space-y-1">
@@ -43,7 +43,7 @@ export function Sidebar() {
                         isActive
                           ? 'bg-gray-700 text-white border-r-2 border-blue-500'
                           : 'text-gray-300 hover:text-white hover:bg-gray-700',
-                        'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-colors duration-200'
+                        'group flex gap-x-3 p-2 text-sm leading-6 font-semibold transition-colors duration-200'
                       )}
                     >
                       <item.icon
