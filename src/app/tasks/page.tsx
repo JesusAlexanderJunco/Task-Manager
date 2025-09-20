@@ -10,6 +10,7 @@ import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 export default function TasksPage() {
   const [showTaskForm, setShowTaskForm] = useState(false)
   const [showUserForm, setShowUserForm] = useState(false)
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<{
     isOpen: boolean
     taskId: string | null
@@ -27,6 +28,7 @@ export default function TasksPage() {
     isLoading: usersLoading, 
     refetch: refetchUsers 
   } = apiRouter.users.getAll.useQuery()
+  
 
   const deleteTaskMutation = apiRouter.tasks.delete.useMutation({
     onSuccess: () => {
@@ -72,6 +74,15 @@ export default function TasksPage() {
     )
   }
 
+  // Filter tasks based on selected user
+  const filteredTasks = selectedUserId 
+    ? tasks?.filter(task => task.assigneeId === selectedUserId) || []
+    : tasks || []
+
+  const handleUserClick = (userId: string) => {
+    setSelectedUserId(selectedUserId === userId ? null : userId)
+  }
+
   return (
     <div className="p-8 bg-white min-h-full">
       <div className="flex items-center justify-between mb-8">
@@ -100,15 +111,25 @@ export default function TasksPage() {
         {/* Tasks Section */}
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Tasks</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              {selectedUserId ? 'Filtered tasks' : 'Assigned tasks'}
+              {selectedUserId && (
+                <button
+                  onClick={() => setSelectedUserId(null)}
+                  className="ml-2 text-sm text-blue-500 hover:text-blue-600 font-normal"
+                >
+                  (Clear filter)
+                </button>
+              )}
+            </h2>
             <div className="text-sm text-gray-500">
-              {tasks?.length || 0} total
+              {filteredTasks.length} {selectedUserId ? 'filtered' : 'total'}
             </div>
           </div>
           
-          {tasks?.length ? (
+          {filteredTasks.length ? (
             <div className="space-y-4">
-              {tasks.map((task) => (
+              {filteredTasks.map((task) => (
                 <TaskCard
                   key={task.id}
                   task={task}
@@ -151,18 +172,37 @@ export default function TasksPage() {
                 const userTasks = tasks?.filter(task => task.assigneeId === user.id) || []
                 const completedTasks = userTasks.filter(task => task.status === 'DONE').length
                 
+                const isSelected = selectedUserId === user.id
+                
                 return (
-                  <div key={user.id} className="p-4 border rounded-lg bg-white">
+                  <div 
+                    key={user.id} 
+                    onClick={() => handleUserClick(user.id)}
+                    className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                      isSelected 
+                        ? 'bg-blue-50 border-blue-300 shadow-md scale-105 ring-2 ring-blue-200' 
+                        : 'bg-white hover:bg-gray-50 hover:border-gray-300'
+                    }`}
+                  >
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="font-medium text-gray-900">{user.name}</p>
-                        <p className="text-sm text-gray-600">{user.email}</p>
+                        <p className={`font-medium ${isSelected ? 'text-blue-900' : 'text-gray-900'}`}>
+                          {user.name}
+                        </p>
+                        <p className={`text-sm ${isSelected ? 'text-blue-700' : 'text-gray-600'}`}>
+                          {user.email}
+                        </p>
                       </div>
-                      <div className="text-xs text-gray-500 text-right">
+                      <div className={`text-xs text-right ${isSelected ? 'text-blue-600' : 'text-gray-500'}`}>
                         <div>{userTasks.length} tasks</div>
                         <div>{completedTasks} completed</div>
                       </div>
                     </div>
+                    {isSelected && (
+                      <div className="mt-2 text-xs text-blue-600 font-medium">
+                        ✓ Selected - showing tasks for this user
+                      </div>
+                    )}
                   </div>
                 )
               })}

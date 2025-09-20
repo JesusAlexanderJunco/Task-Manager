@@ -2,10 +2,13 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { 
-  HomeIcon, 
-  ClipboardDocumentListIcon, 
-  Squares2X2Icon 
+import { useSession, signOut } from 'next-auth/react'
+import {
+  HomeIcon,
+  ClipboardDocumentListIcon,
+  Squares2X2Icon,
+  UserIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
 
 const navigation = [
@@ -20,6 +23,7 @@ function classNames(...classes: string[]) {
 
 export function Sidebar() {
   const pathname = usePathname()
+  const { data: session } = useSession()
 
   return (
     <div className="flex flex-col w-64 bg-gray-800">
@@ -63,8 +67,39 @@ export function Sidebar() {
         </ul>
       </nav>
 
+      {/* Profile Section */}
+      {session?.user && (
+        <div className="flex-shrink-0 p-4 border-t border-gray-700">
+          <div className="flex items-center space-x-3">
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                <UserIcon className="w-5 h-5 text-blue-600" />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">
+                {session.user.name}
+              </p>
+              <p className="text-xs text-gray-400 truncate">
+                {session.user.email}
+              </p>
+              <p className="text-xs text-blue-400 font-medium">
+                {session.user.role}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => signOut()}
+            className="mt-3 w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md transition-colors duration-200"
+          >
+            <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
+            Sign Out
+          </button>
+        </div>
+      )}
+
       {/* Footer */}
-      <div className="flex-shrink-0 p-4 border-t border-gray-700">
+      <div className="flex-shrink-0 px-4 py-2 border-t border-gray-700">
         <p className="text-xs text-gray-400 text-center">
           Collaborative Task Management
         </p>

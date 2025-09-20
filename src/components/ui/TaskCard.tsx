@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import { apiRouter } from '@/lib/trpc'
-import { News_Cycle } from 'next/font/google'
-import { error } from 'console'
+import { CommentList } from './CommentList'
 
 type Task = {
   id: string
@@ -17,6 +16,16 @@ type Task = {
     name: string
     email: string
   }
+  comments?: Array<{
+    id: string
+    content: string
+    createdAt: Date
+    author: {
+      id: string
+      name: string
+      email: string
+    }
+  }>
 }
 
 type TaskCardProps = {
@@ -40,6 +49,7 @@ const statusColors = {
 
 export function TaskCard({ task, onUpdate, onDelete }: TaskCardProps) {
   const [isEditing, setIsEditing] = useState(false)
+  const [showComments, setShowComments] = useState(false)
   const [editedTitle, setEditedTitle] = useState(task.title)
   const [editedDescription, setEditedDescription] = useState(task.description || '')
 
@@ -50,7 +60,7 @@ export function TaskCard({ task, onUpdate, onDelete }: TaskCardProps) {
     }
   })
 
-  const handleStatusChange = (oldStatus: any, newStatus: 'TODO' | 'IN_PROGRESS' | 'DONE') => {
+  const handleStatusChange = (oldStatus: 'TODO' | 'IN_PROGRESS' | 'DONE', newStatus: 'TODO' | 'IN_PROGRESS' | 'DONE') => {
     if (newStatus == 'TODO' || oldStatus == 'DONE') {
       console.log('The task is in progress and cannot be revered to Todo')
     }
@@ -195,7 +205,26 @@ export function TaskCard({ task, onUpdate, onDelete }: TaskCardProps) {
         >
           Delete
         </button>
+
+        {/* Comments toggle button */}
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded hover:bg-gray-200"
+        >
+          {showComments ? 'Hide' : 'Show'} Comments ({task.comments?.length || 0})
+        </button>
       </div>
+
+      {/* Comments section */}
+      {showComments && (
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <CommentList
+            taskId={task.id}
+            comments={task.comments}
+            onRefresh={onUpdate}
+          />
+        </div>
+      )}
     </div>
   )
 }

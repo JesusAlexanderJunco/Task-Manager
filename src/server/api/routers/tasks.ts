@@ -1,4 +1,4 @@
-import { createTRPCRouter, publicProcedure } from '@/server/api/trpc'
+import { createTRPCRouter, publicProcedure, protectedProcedure, adminProcedure } from '@/server/api/trpc'
 import {
   createTaskSchema,
   updateTaskSchema,
@@ -9,7 +9,7 @@ import {
 
 export const tasksRouter = createTRPCRouter({
   // Get all tasks with optional filtering
-  getAll: publicProcedure
+  getAll: protectedProcedure
     .input(getTasksSchema)
     .query(async ({ ctx, input }) => {
       const { status, assigneeId, priority } = input
@@ -40,7 +40,7 @@ export const tasksRouter = createTRPCRouter({
     }),
 
   // Get task by ID
-  getById: publicProcedure
+  getById: protectedProcedure
     .input(getTaskByIdSchema)
     .query(async ({ ctx, input }) => {
       const task = await ctx.prisma.task.findUnique({
@@ -65,8 +65,8 @@ export const tasksRouter = createTRPCRouter({
       return task
     }),
 
-  // Create new task
-  create: publicProcedure
+  // Create new task - Only admins can create tasks
+  create: adminProcedure
     .input(createTaskSchema)
     .mutation(async ({ ctx, input }) => {
       const task = await ctx.prisma.task.create({
@@ -90,11 +90,21 @@ export const tasksRouter = createTRPCRouter({
       return task
     }),
 
-  // Update existing task
-  update: publicProcedure
+  update: protectedProcedure
     .input(updateTaskSchema)
     .mutation(async ({ ctx, input }) => {
       const { id, ...updateData } = input
+
+      
+      if (ctx.user.role !== 'ADMIN') {
+        const existingTask = await ctx.prisma.task.findUnique({
+          where: { id },
+        })
+
+        if (!existingTask || existingTask.assigneeId !== ctx.user.id) {
+          throw new Error('You can only update tasks assigned to you')
+        }
+      }
 
       const task = await ctx.prisma.task.update({
         where: { id },
@@ -112,8 +122,8 @@ export const tasksRouter = createTRPCRouter({
       return task
     }),
 
-  // Delete task
-  delete: publicProcedure
+  // Delete task - Only admins can delete tasks
+  delete: adminProcedure
     .input(deleteTaskSchema)
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.task.delete({
