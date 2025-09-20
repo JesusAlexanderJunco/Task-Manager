@@ -33,11 +33,15 @@ export const createUserSchema = z.object({
   email: z.string().email('Invalid email address'),
 })
 
-// Comment-related 
+// Comment-related
 export const createCommentSchema = z.object({
   content: z.string().min(1, 'Comment cannot be empty').max(500),
   taskId: z.string(),
-  authorId: z.string(),
+  // authorId is now set automatically from authenticated user
+})
+
+export const getCommentByTaskSchema = z.object({
+  taskId: z.string()
 })
 
 // Filter schemas
